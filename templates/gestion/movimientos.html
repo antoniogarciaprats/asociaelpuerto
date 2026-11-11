@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">RECURSOS CON CLARIDAD</p>
+<h1>Tesorería</h1>
+<p class="muted">Cobros y pagos desde el primer movimiento registrado. Las correcciones también suman.</p>
+</div>
+{% if perms.gestion.add_movimiento %}
+<a class="button" href="{% url 'gestion:movimiento_nuevo' %}">+ Ingreso o gasto</a>
+{% endif %}
+</div>
+{% include 'gestion/balance.html' %}
+<section class="card">
+<h2>Libro de caja</h2>
+{% include 'gestion/tabla_movimientos.html' %}
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Fecha / ID</th>
+<th>Concepto</th>
+<th>Tipo</th>
+<th>Importe</th>
+<th>Autor</th>
+<th>Historial</th>
+</tr>
+</thead>
+<tbody>
+{% for m in page_obj %}
+<tr>
+<td>{{ m.fecha|date:'d/m/Y' }}<small>#{{ m.pk }}</small>
+</td>
+<td>
+<strong>{{ m.concepto }}</strong>
+<small>{{ m.get_categoria_display }}{% if m.actividad %} · {{ m.actividad.titulo }}{% endif %}
+</small>
+</td>
+<td>
+<span class="badge {% if m.tipo == 'G' %}warning{% endif %}">{{ m.get_tipo_display }}</span>
+</td>
+<td class="money">{{ m.importe|floatformat:2 }} €</td>
+<td>{{ m.creado_por.username }}</td>
+<td>
+{% if m.reversa_de_id %}Corrige #{{ m.reversa_de_id }}{% elif m.reversion %}Corregido por #{{ m.reversion.pk }}{% elif perms.gestion.revertir_movimiento %}
+<a href="{% url 'gestion:revertir' m.pk %}">Corregir</a>
+{% endif %}
+</td>
+</tr>
+{% empty %}
+<tr>
+<td colspan="6" class="empty">No hay movimientos que mostrar.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% include 'gestion/paginacion.html' %}

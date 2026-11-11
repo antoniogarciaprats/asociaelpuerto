@@ -1,0 +1,14 @@
+<div class="stats">
+<article class="stat">
+<span>Entradas registradas</span>
+<strong>{{ balance.ingresos|floatformat:2 }} €</strong>
+</article>
+<article class="stat">
+<span>Salidas registradas</span>
+<strong>{{ balance.gastos|floatformat:2 }} €</strong>
+</article>
+<article class="stat">
+<span>Flujo neto</span>
+<strong>{{ balance.neto|floatformat:2 }} €</strong>
+</article>
+</div>

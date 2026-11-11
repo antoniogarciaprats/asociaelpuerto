@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">PERSONAS QUE SUMAN</p>
+<h1>Socios</h1>
+<p class="muted">El directorio de vuestra comunidad.</p>
+</div>
+{% if perms.gestion.add_socio %}
+<a class="button" href="{% url 'gestion:socio_nuevo' %}">+ Nuevo socio</a>
+{% endif %}
+</div>
+<section class="card">
+<form class="filters" method="get">
+<div>
+<label for="q">Buscar socio</label>
+<input id="q" name="q" value="{{ q }}" placeholder="Número, nombre o apellidos">
+</div>
+<div>
+<label for="estado">Estado</label>
+<select id="estado" name="estado">
+<option value="activos" {% if estado == 'activos' %}selected{% endif %}>Activos</option>
+<option value="inactivos" {% if estado == 'inactivos' %}selected{% endif %}>Inactivos</option>
+<option value="todos" {% if estado == 'todos' %}selected{% endif %}>Todos</option>
+</select>
+</div>
+<button class="button secondary" type="submit">Buscar</button>
+</form>
+<div class="table-wrap">
+<table>
+<caption class="sr-only">Directorio de socios</caption>
+<thead>
+<tr>
+<th>Número</th>
+<th>Socio</th>
+<th>Contacto</th>
+<th>Estado</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody>
+{% for s in page_obj %}
+<tr>
+<td class="muted">{{ s.numero }}</td>
+<td>
+<strong>{{ s.nombre }} {{ s.apellidos }}</strong>
+<small>Alta: {{ s.fecha_alta|date:'d/m/Y' }}</small>
+</td>
+<td>{{ s.email|default:'Sin correo' }}<small>{{ s.telefono }}</small>
+</td>
+<td>
+<span class="badge {% if not s.activo %}neutral{% endif %}">
+{% if s.activo %}Activo{% else %}Inactivo{% endif %}
+</span>
+</td>
+<td>
+{% if perms.gestion.change_socio %}
+<a href="{% url 'gestion:socio_editar' s.pk %}">Editar</a>
+{% else %}Consulta{% endif %}
+</td>
+</tr>
+{% empty %}
+<tr>
+<td class="empty" colspan="5">No hay socios que coincidan con la búsqueda.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% include 'gestion/paginacion.html' %}
+</section>
+{% endblock %}

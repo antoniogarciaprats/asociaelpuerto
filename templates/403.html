@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+<p class="eyebrow">403</p>
+<h1>Acceso restringido</h1>
+<p>Tu cuenta no tiene permiso para abrir esta sección.</p>
+<a class="button" href="{% url 'gestion:inicio' %}">Volver al inicio</a>
+</section>
+{% endblock %}

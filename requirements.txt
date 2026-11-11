@@ -1,0 +1,5 @@
+# Serie LTS. Actualizar parches y repetir las pruebas antes de uso real.
+Django==5.2.19
+asgiref==3.13.0
+sqlparse==0.6.1
+tzdata==2026.2; sys_platform == "win32"

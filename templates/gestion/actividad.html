@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">AGENDA DE LA ASOCIACIÓN</p>
+<h1>{{ actividad.titulo }}</h1>
+<p class="muted">{{ actividad.inicio|date:'d/m/Y H:i' }} - {{ actividad.fin|date:'d/m/Y H:i' }} · {{ actividad.lugar }}</p>
+</div>
+{% if perms.gestion.change_actividad %}
+<a class="button secondary" href="{% url 'gestion:actividad_editar' actividad.pk %}">Editar actividad</a>
+{% endif %}
+</div>
+<div class="detail-grid">
+<section class="card">
+<span class="badge">{{ actividad.get_estado_display }}</span>
+<h2>{{ actividad.disponibles }} plazas disponibles</h2>
+<p>{{ actividad.descripcion|linebreaksbr }}</p>
+<p class="muted">Aforo: {{ actividad.aforo }} · Inscripciones activas: {{ actividad.ocupadas }}</p>
+{% if perms.gestion.add_inscripcion and actividad.admite_inscripciones %}
+<form method="post" action="{% url 'gestion:inscribir' actividad.pk %}">
+{% csrf_token %}
+<div class="field">
+<label for="{{ form.socio.id_for_label }}">Socio activo</label>{{ form.socio }}</div>
+<button class="button" type="submit">Inscribir socio</button>
+</form>
+{% endif %}
+<p class="muted">Cancelar una actividad conserva sus inscripciones como historial. Las bajas de socios conservan las reservas existentes.</p>
+</section>
+<section class="card">
+<h2>Participantes</h2>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Socio</th>
+<th>Estado</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody>
+{% for i in inscripciones %}
+<tr>
+<td>{{ i.socio.nombre }} {{ i.socio.apellidos }}<small>{{ i.socio.numero }}{% if not i.socio.activo %} · Socio inactivo{% endif %}
+</small>
+</td>
+<td>
+{% if i.activa %}{% if i.asistio %}Asistencia confirmada{% else %}Inscrito{% endif %}{% else %}Cancelada{% endif %}
+</td>
+<td>
+{% if perms.gestion.change_inscripcion and i.activa %}
+<div class="actions">
+<form method="post" action="{% url 'gestion:cancelar' i.pk %}">
+{% csrf_token %}
+<button type="submit" class="text-button">Cancelar</button>
+</form>
+<form method="post" action="{% url 'gestion:asistencia' i.pk %}">
+{% csrf_token %}
+<button type="submit" class="text-button">Cambiar asistencia</button>
+</form>
+</div>
+{% endif %}
+</td>
+</tr>
+{% empty %}
+<tr>
+<td colspan="3" class="empty">Aún no hay inscripciones.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+</div>
+{% endblock %}

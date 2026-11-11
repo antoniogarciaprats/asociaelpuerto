@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">SOSTENER LA COMUNIDAD</p>
+<h1>Cuotas anuales</h1>
+<p class="muted">Emitir una cuota crea una obligación de pago. Cobrarla registra el ingreso.</p>
+</div>
+{% if perms.gestion.add_cuota %}
+<a class="button" href="{% url 'gestion:cuota_nueva' %}">+ Emitir cuota</a>
+{% endif %}
+</div>
+<section class="card">
+<form class="filters" method="get">
+<div>
+<label for="estado">Mostrar</label>
+<select id="estado" name="estado">
+<option value="todas">Todas</option>
+<option value="pendientes" {% if estado == 'pendientes' %}selected{% endif %}>Sin cobrar</option>
+<option value="pagadas" {% if estado == 'pagadas' %}selected{% endif %}>Pagadas</option>
+</select>
+</div>
+<button class="button secondary">Filtrar</button>
+</form>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Socio</th>
+<th>Ejercicio</th>
+<th>Vencimiento</th>
+<th>Importe</th>
+<th>Estado</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+{% for c in page_obj %}
+<tr>
+<td>{{ c.socio.nombre }} {{ c.socio.apellidos }}<small>{{ c.socio.numero }}</small>
+</td>
+<td>{{ c.ejercicio|stringformat:'d' }}</td>
+<td>{{ c.vencimiento|date:'d/m/Y' }}</td>
+<td class="money">{{ c.importe|floatformat:2 }} €</td>
+<td>
+<span class="badge {% if not c.pago_id %}warning{% endif %}">{{ c.estado }}</span>
+</td>
+<td>
+{% if not c.pago_id and perms.gestion.change_cuota and perms.gestion.add_movimiento %}
+<a href="{% url 'gestion:cobrar' c.pk %}">Registrar cobro</a>
+{% elif c.pago_id %}Cobro #{{ c.pago_id }}{% endif %}
+</td>
+</tr>
+{% empty %}
+<tr>
+<td colspan="6" class="empty">No hay cuotas en este estado.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% include 'gestion/paginacion.html' %}
+</section>
+{% endblock %}

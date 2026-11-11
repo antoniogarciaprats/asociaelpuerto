@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">TU COMUNIDAD, AL DÍA</p>
+<h1>Panel de la asociación</h1>
+<p class="muted">Personas, encuentros y recursos en un mismo lugar.</p>
+</div>
+<span class="badge">
+{% now 'd M Y' %}
+</span>
+</div>
+<section class="hero">
+<div>
+<p class="eyebrow">HORIZONTE DEL PUERTO</p>
+<h2>Pequeñas acciones.<br>Una comunidad que crece.</h2>
+<p>Organiza la vida de la asociación y dedica más tiempo a lo que os une.</p>
+</div>
+<div class="hero-seal">AP<small>EL PUERTO</small>
+</div>
+</section>
+<div class="stats">
+  {% if perms.gestion.view_socio %}
+<article class="stat">
+<span>Socios activos</span>
+<strong>{{ socios_activos }}</strong>
+<a href="{% url 'gestion:socios' %}">Ver directorio →</a>
+</article>
+{% endif %}
+  {% if perms.gestion.view_actividad %}
+<article class="stat">
+<span>Actividades abiertas</span>
+<strong>{{ actividades_abiertas }}</strong>
+<a href="{% url 'gestion:actividades' %}">Ver agenda →</a>
+</article>
+{% endif %}
+  {% if perms.gestion.view_cuota %}
+<article class="stat">
+<span>Cuotas sin cobrar</span>
+<strong>{{ cuotas_pendientes }}</strong>
+<a href="{% url 'gestion:cuotas' %}">Revisar cuotas →</a>
+</article>
+{% endif %}
+  {% if perms.gestion.view_movimiento %}
+<article class="stat">
+<span>Saldo registrado</span>
+<strong>{{ balance.neto|floatformat:2 }} €</strong>
+<a href="{% url 'gestion:movimientos' %}">Ver tesorería →</a>
+</article>
+{% endif %}
+</div>
+{% if perms.gestion.view_actividad %}
+<section class="card">
+<div class="section-heading">
+<h2>Agenda de actividades</h2>
+<a href="{% url 'gestion:actividades' %}">Todas las actividades →</a>
+</div>
+  {% for a in actividades %}
+<a class="agenda-row" href="{% url 'gestion:actividad' a.pk %}">
+<div class="date-tile">
+<strong>{{ a.inicio|date:'d' }}</strong>
+<span>{{ a.inicio|date:'M' }}</span>
+</div>
+<div>
+<strong>{{ a.titulo }}</strong>
+<p>{{ a.lugar }} · {{ a.inicio|date:'H:i' }}</p>
+</div>
+<span class="badge">{{ a.get_estado_display }}</span>
+</a>
+{% empty %}
+<p class="empty">La agenda está lista para vuestra primera actividad.</p>
+{% endfor %}
+</section>
+{% endif %}
+{% if not perms.gestion.view_socio %}
+<p class="message">Tu cuenta está activa. Solicita a la persona administradora un grupo de gestión.</p>
+{% endif %}
+{% endblock %}

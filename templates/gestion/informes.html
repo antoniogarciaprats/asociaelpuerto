@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">DECIDIR CON INFORMACIÓN</p>
+<h1>Informe de tesorería</h1>
+<p class="muted">Elige un periodo para revisar sus movimientos o exportarlos.</p>
+</div>
+</div>
+<section class="card">
+<form method="get" class="filters">{{ form.non_field_errors }}{% for field in form %}
+<div>
+<label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>
+{% endfor %}
+<button class="button">Consultar</button>
+</form>
+</section>
+{% if balance %}{% include 'gestion/balance.html' %}
+<section class="card">
+<div class="section-heading">
+<div>
+<h2>Movimientos del periodo</h2>
+<p class="muted">Saldo registrado anterior: {{ saldo_inicial|floatformat:2 }} € · Saldo al cierre: {{ saldo_final|floatformat:2 }} €</p>
+</div>
+<a class="button secondary" href="?desde={{ desde }}&amp;hasta={{ hasta }}&amp;formato=csv">Descargar CSV</a>
+</div>
+{% include 'gestion/tabla_movimientos.html' %}
+</section>
+{% endif %}
+{% endblock %}

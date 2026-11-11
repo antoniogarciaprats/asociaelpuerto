@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+<div>
+<p class="eyebrow">ENCUENTROS Y EXPERIENCIAS</p>
+<h1>Actividades</h1>
+<p class="muted">Organiza la agenda y sus participantes.</p>
+</div>
+{% if perms.gestion.add_actividad %}
+<a class="button" href="{% url 'gestion:actividad_nueva' %}">+ Nueva actividad</a>
+{% endif %}
+</div>
+<div class="activity-grid">
+{% for a in page_obj %}
+<article class="card activity-card">
+<div class="section-heading">
+<span class="badge">{{ a.get_estado_display }}</span>
+<span class="muted">{{ a.inicio|date:'d M Y' }}</span>
+</div>
+<h2>{{ a.titulo }}</h2>
+<p class="muted">{{ a.lugar }}</p>
+<p>{{ a.inicio|date:'H:i' }} - {{ a.fin|date:'H:i' }}</p>
+<div class="capacity">
+<span>{{ a.ocupadas }} / {{ a.aforo }} plazas</span>
+<strong>{{ a.disponibles }} libres</strong>
+</div>
+<a class="button secondary" href="{% url 'gestion:actividad' a.pk %}">Ver participantes</a>
+</article>
+{% empty %}
+<section class="card empty">Todavía no hay actividades.</section>
+{% endfor %}
+</div>
+{% include 'gestion/paginacion.html' %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>
+{% block title %}Asocia Puerto{% endblock %}
+</title>
+<link rel="stylesheet" href="{% static 'gestion/app.css' %}">
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="app">
+<aside class="sidebar">
+<a class="brand" href="{% url 'gestion:inicio' %}">
+<span class="brand-mark">AP</span>
+<span>Asocia Puerto<small>Gestión de asociaciones</small>
+</span>
+</a>
+<p class="nav-caption">ESPACIO DE GESTIÓN</p>
+<nav aria-label="Navegación principal">
+<a href="{% url 'gestion:inicio' %}" {% if request.resolver_match.url_name == 'inicio' %}aria-current="page"{% endif %}>Inicio</a>
+      {% if perms.gestion.view_socio %}
+<a href="{% url 'gestion:socios' %}">Socios</a>
+{% endif %}
+      {% if perms.gestion.view_actividad %}
+<a href="{% url 'gestion:actividades' %}">Actividades</a>
+{% endif %}
+      {% if perms.gestion.view_cuota %}
+<a href="{% url 'gestion:cuotas' %}">Cuotas</a>
+{% endif %}
+      {% if perms.gestion.view_movimiento %}
+<a href="{% url 'gestion:movimientos' %}">Tesorería</a>
+{% endif %}
+      {% if perms.gestion.exportar_informe %}
+<a href="{% url 'gestion:informes' %}">Informes</a>
+{% endif %}
+      {% if user.is_staff %}
+<a href="{% url 'admin:index' %}">Administración</a>
+{% endif %}
+    </nav>
+<div class="sidebar-note">
+<strong>El Puerto de Santa María</strong>
+<p>Un espacio para cuidar de tu comunidad.</p>
+<span class="badge light">Proyecto de aula</span>
+</div>
+</aside>
+<div class="workspace">
+<header class="topbar">
+<span>Asociación Horizonte del Puerto <small>Entidad ficticia</small>
+</span>
+      {% if user.is_authenticated %}
+<div class="user-area">
+<span>{{ user.get_username }}</span>
+<form action="{% url 'logout' %}" method="post">
+{% csrf_token %}
+<button class="text-button" type="submit">Cerrar sesión</button>
+</form>
+</div>
+{% endif %}
+    </header>
+<main id="contenido">
+      {% for message in messages %}
+<div role="status" class="message {{ message.tags }}">{{ message }}</div>
+{% endfor %}
+      {% block content %}{% endblock %}
+    </main>
+<footer>Asocia Puerto · Proyecto didáctico · El Puerto de Santa María</footer>
+</div>
+</div>
+</body>
+</html>
